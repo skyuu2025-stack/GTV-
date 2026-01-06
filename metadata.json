@@ -1,0 +1,7 @@
+{
+  "name": "GTV AI Assessor",
+  "description": "AI-powered UK Global Talent Visa eligibility assessment for Fashion, Tech, and Arts professionals. Check your endorsement readiness instantly.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
