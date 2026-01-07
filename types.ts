@@ -7,24 +7,41 @@ export enum VisaRoute {
   FILM = 'Film and Television (PACT)'
 }
 
+export interface Recommendation {
+  title: string;
+  description: string;
+  action: string;
+}
+
+export interface GroundingSource {
+  title: string;
+  uri: string;
+}
+
+export interface InsightPoint {
+  title: string;
+  description: string;
+}
+
 export interface UserProfile {
   fullName: string;
   email: string;
   route: VisaRoute;
-  // Fixed: Corrected union type syntax by removing invalid parenthetical descriptions
   careerStage: 'Exceptional Talent' | 'Exceptional Promise';
   currentRole: string;
   summary: string;
   evidenceItems: string[];
+  evidenceImages: string[];
 }
 
 export interface AssessmentResult {
   score: number;
   probability: string;
-  strengths: string[];
-  weaknesses: string[];
-  recommendations: string[];
+  strengths: InsightPoint[];
+  weaknesses: InsightPoint[];
+  recommendations: Recommendation[];
   suggestedEvidence: string[];
+  groundingSources: GroundingSource[];
 }
 
 export interface AdminLog {

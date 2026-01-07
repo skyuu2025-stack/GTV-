@@ -1,21 +1,33 @@
 import React, { useState, useCallback } from 'react';
-import Header from './components/Header';
-import Footer from './components/Footer';
-import Hero from './components/Hero';
-import AssessmentForm from './components/AssessmentForm';
-import ResultsView from './components/ResultsView';
-import AdminDashboard from './components/AdminDashboard';
-import { UserProfile, AssessmentResult } from './types';
+import Header from './components/Header.tsx';
+import Hero from './components/Hero.tsx';
+import AssessmentForm from './components/AssessmentForm.tsx';
+import ResultsView from './components/ResultsView.tsx';
+import PaymentView from './components/PaymentView.tsx';
+import AdminDashboard from './components/AdminDashboard.tsx';
+import { UserProfile, AssessmentResult } from './types.ts';
 
 const App: React.FC = () => {
-  const [view, setView] = useState<'home' | 'assessment' | 'results' | 'admin'>('home');
+  const [view, setView] = useState<'home' | 'assessment' | 'payment' | 'results' | 'admin'>('home');
+  const [userTier, setUserTier] = useState<'free' | 'premium'>('free');
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [results, setResults] = useState<AssessmentResult | null>(null);
 
   const startAssessment = () => setView('assessment');
-  const showResults = (res: AssessmentResult, prof: UserProfile) => {
+  
+  const handleAssessmentComplete = (res: AssessmentResult, prof: UserProfile) => {
     setResults(res);
     setProfile(prof);
+    setUserTier('free');
+    setView('results'); // Go directly to results (free version)
+  };
+
+  const handleUpgradeIntent = () => {
+    setView('payment');
+  };
+
+  const handlePaymentSuccess = () => {
+    setUserTier('premium');
     setView('results');
   };
 
@@ -23,20 +35,42 @@ const App: React.FC = () => {
     if (count >= 5) setView('admin');
   }, []);
 
-  return (
-    <div className="h-full flex flex-col bg-white overflow-hidden safe-pt safe-pb">
-      <Header onLogoClick={handleLogoClick} onGoHome={() => setView('home')} />
-      
-      <main className="flex-grow overflow-hidden relative">
-        {view === 'home' && <Hero onStart={startAssessment} />}
-        {view === 'assessment' && <AssessmentForm onComplete={showResults} onCancel={() => setView('home')} />}
-        {view === 'results' && results && profile && (
-          <ResultsView results={results} profile={profile} onRestart={() => setView('home')} />
-        )}
-        {view === 'admin' && <AdminDashboard onClose={() => setView('home')} />}
-      </main>
+  const handleGoHome = () => {
+    setView('home');
+    setUserTier('free');
+  };
 
-      {view === 'home' && <Footer />}
+  return (
+    <div className="fixed inset-0 bg-white flex flex-col overflow-hidden animate-fade-in">
+      {view !== 'home' && <Header onLogoClick={handleLogoClick} onGoHome={handleGoHome} />}
+      
+      <main className="flex-grow overflow-hidden relative w-full h-full">
+        {view === 'home' && (
+          <Hero onStart={startAssessment} />
+        )}
+        {view === 'assessment' && (
+          <AssessmentForm onComplete={handleAssessmentComplete} onCancel={() => setView('home')} />
+        )}
+        {view === 'payment' && profile && (
+          <PaymentView 
+            profile={profile} 
+            onPaymentSuccess={handlePaymentSuccess} 
+            onCancel={() => setView('results')} 
+          />
+        )}
+        {view === 'results' && results && profile && (
+          <ResultsView 
+            results={results} 
+            profile={profile} 
+            isPaid={userTier === 'premium'}
+            onRestart={handleGoHome} 
+            onUpgrade={handleUpgradeIntent}
+          />
+        )}
+        {view === 'admin' && (
+          <AdminDashboard onClose={() => setView('home')} />
+        )}
+      </main>
     </div>
   );
 };

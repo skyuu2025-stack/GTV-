@@ -6,51 +6,58 @@ interface HeroProps {
 
 const Hero: React.FC<HeroProps> = ({ onStart }) => {
   return (
-    <section className="h-full flex flex-col items-center justify-between py-8 px-6 text-center animate-fade-in">
-      {/* Top Section */}
-      <div className="flex flex-col items-center">
-        <div className="flex items-center gap-2 bg-[#FFFBEB] text-[#D97706] px-3 py-1 rounded-full mb-6 border border-[#FEF3C7]">
-          <i className="fa-solid fa-bolt text-[8px]"></i>
-          <span className="text-[9px] font-black uppercase tracking-[0.2em]">2026 AI ENGINE</span>
+    <section className="w-full h-full flex flex-col items-center justify-between bg-white px-6 animate-fade-in pt-[calc(var(--sat)+1rem)] pb-[calc(var(--sab)+2rem)] overflow-hidden">
+      {/* Top Zone */}
+      <div className="flex flex-col items-center w-full">
+        <div className="inline-flex items-center gap-2 bg-[#F0F9FF] text-[#0284C7] px-5 py-1.5 rounded-full mb-6 border border-[#E0F2FE] mt-2">
+          <i className="fa-solid fa-sparkles text-[9px]"></i>
+          <span className="text-[10px] font-black uppercase tracking-[0.2em]">Free Basic Audit Included</span>
         </div>
 
-        <h1 className="text-6xl sm:text-7xl font-black italic tracking-tighter leading-[0.85] text-[#1A1A1A] flex flex-col items-center mb-4">
-          <span>GLOBAL</span>
-          <span>TALENT</span>
-          <span className="text-[#F59E0B]">VISA</span>
-        </h1>
-        
-        <p className="text-gray-400 text-sm font-medium italic max-w-[240px]">
-          Professional UK endorsement roadmap powered by expert AI.
+        <div className="text-center mb-2">
+          <h1 className="text-[14vw] sm:text-[80px] font-black italic tracking-tighter leading-[0.85] flex flex-col items-center uppercase">
+            <span className="text-[#1A1A1A]">GLOBAL</span>
+            <span className="text-[#1A1A1A]">TALENT</span>
+            <span className="text-[#F59E0B]">VISA</span>
+          </h1>
+        </div>
+
+        <p className="text-[#94A3B8] text-[11px] sm:text-lg font-bold italic text-center max-w-[240px] leading-tight opacity-90 mt-2">
+          Get your endorsement probability score in <span className="text-black">60 seconds</span> for free.
         </p>
       </div>
 
-      {/* Center Section (Features) */}
-      <div className="flex gap-3 scale-90 sm:scale-100">
-        <div className="bg-[#FAFAFA] border border-gray-50 rounded-[24px] p-5 w-32 flex flex-col items-center gap-3">
-          <i className="fa-solid fa-shield-halved text-xl text-[#F59E0B]"></i>
-          <span className="text-[8px] font-black uppercase tracking-widest text-gray-500">Endorsed</span>
+      {/* Middle Zone */}
+      <div className="flex gap-4 w-full max-w-[360px] my-4">
+        <div className="flex-1 bg-[#F9FAFB] py-4 rounded-[28px] flex flex-col items-center justify-center gap-1.5 border border-gray-50/50">
+          <div className="text-black">
+             <span className="text-[10px] font-black">FREE</span>
+          </div>
+          <span className="text-[7px] font-black uppercase tracking-[0.2em] text-[#94A3B8]">Basic Score</span>
         </div>
-        <div className="bg-[#FAFAFA] border border-gray-50 rounded-[24px] p-5 w-32 flex flex-col items-center gap-3">
-          <i className="fa-solid fa-clock text-xl text-[#F59E0B]"></i>
-          <span className="text-[8px] font-black uppercase tracking-widest text-gray-500">Fast-Track</span>
+        <div className="flex-1 bg-[#FFFBEB] py-4 rounded-[28px] flex flex-col items-center justify-center gap-1.5 border border-[#FEF3C7]">
+          <div className="text-[#F59E0B]">
+            <i className="fa-solid fa-crown text-sm"></i>
+          </div>
+          <span className="text-[7px] font-black uppercase tracking-[0.2em] text-[#F59E0B]">Expert Report</span>
         </div>
       </div>
 
-      {/* Bottom Section */}
-      <div className="w-full flex flex-col items-center gap-8 mb-4">
+      {/* Bottom Zone */}
+      <div className="w-full flex flex-col items-center gap-6">
         <button 
           onClick={onStart}
-          className="w-full max-w-xs bg-[#111111] text-white py-5 rounded-[24px] font-black italic text-lg tracking-wider uppercase shadow-xl active:scale-95 transition-all"
+          className="w-full max-w-[340px] bg-[#111111] text-white py-5 rounded-[28px] font-black italic text-base tracking-widest uppercase shadow-premium active:scale-95 transition-all"
         >
-          Start Audit
+          Start Free Audit
         </button>
 
-        <div className="flex flex-col items-center gap-2 opacity-30">
-          <span className="text-[8px] font-black uppercase tracking-[0.3em]">Aligned Frameworks</span>
-          <div className="flex gap-4 text-[9px] font-black uppercase tracking-widest">
+        <div className="flex flex-col items-center gap-2 pb-1">
+          <span className="text-[7px] font-black uppercase tracking-[0.3em] text-[#94A3B8] opacity-60">Verified Endorsing Criteria</span>
+          <div className="flex gap-3 text-[8px] font-black uppercase tracking-[0.15em] text-[#94A3B8]">
+            <span>2026 HO Rules</span>
+            <span className="opacity-20">/</span>
             <span>Tech Nation</span>
-            <span>Arts Council</span>
           </div>
         </div>
       </div>
