@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { VisaRoute, UserProfile } from '../types';
 import { analyzeEligibility } from '../services/geminiService';
 
@@ -10,6 +11,7 @@ interface AssessmentFormProps {
 const AssessmentForm: React.FC<AssessmentFormProps> = ({ onComplete, onCancel }) => {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [loadingStep, setLoadingStep] = useState(0);
   const [formData, setFormData] = useState<Partial<UserProfile>>({
     fullName: '',
     email: '',
@@ -19,6 +21,24 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onComplete, onCancel })
     summary: '',
     evidenceItems: []
   });
+
+  const loadingMessages = [
+    "Connecting to UK VI framework...",
+    "Analyzing endorsement criteria...",
+    "Parsing career impact data...",
+    "Evaluating evidence readiness...",
+    "Generating professional roadmap..."
+  ];
+
+  useEffect(() => {
+    let interval: any;
+    if (loading) {
+      interval = setInterval(() => {
+        setLoadingStep(s => (s + 1) % loadingMessages.length);
+      }, 1500);
+    }
+    return () => clearInterval(interval);
+  }, [loading]);
 
   const nextStep = () => setStep(s => s + 1);
   const prevStep = () => setStep(s => s - 1);
@@ -31,10 +51,12 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onComplete, onCancel })
     setLoading(true);
     try {
       const result = await analyzeEligibility(formData as UserProfile);
+      // Artificial delay for premium feel if AI is too fast
+      await new Promise(resolve => setTimeout(resolve, 2000));
       onComplete(result, formData as UserProfile);
     } catch (error) {
       console.error(error);
-      alert('Assessment failed. Check your connection.');
+      alert('Assessment failed. Check your connection or API key.');
     } finally {
       setLoading(false);
     }
@@ -47,7 +69,21 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onComplete, onCancel })
   ];
 
   return (
-    <div className="h-full flex flex-col px-6 py-4 animate-fade-in overflow-hidden">
+    <div className="h-full flex flex-col px-6 py-4 animate-fade-in overflow-hidden relative">
+      {/* Premium Loading Overlay */}
+      {loading && (
+        <div className="fixed inset-0 z-[100] bg-white/90 backdrop-blur-xl flex flex-col items-center justify-center p-8 text-center animate-fade-in">
+          <div className="w-16 h-16 border-4 border-gray-100 border-t-black rounded-full animate-spin mb-8"></div>
+          <div className="space-y-2">
+            <p className="text-[10px] font-black tracking-[0.4em] uppercase text-gray-400 animate-pulse">
+              {loadingMessages[loadingStep]}
+            </p>
+            <h3 className="text-xl font-black italic uppercase tracking-tighter">AI Audit in Progress</h3>
+          </div>
+          <p className="mt-12 text-[8px] font-medium text-gray-400 uppercase tracking-widest">Powered by Gemini 2.5 Pro Vision Engine</p>
+        </div>
+      )}
+
       {/* Header Info */}
       <div className="flex justify-between items-end mb-6">
         <div>
@@ -118,17 +154,23 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onComplete, onCancel })
         {step === 3 && (
           <div className="space-y-4">
             <div className="space-y-2">
-              <label className="text-[9px] font-black uppercase tracking-widest text-gray-400">Impact Statement</label>
+              <label className="text-[9px] font-black uppercase tracking-widest text-gray-400">Current Professional Role</label>
+              <input 
+                type="text" 
+                className="w-full text-lg font-bold border-b border-gray-100 pb-3 focus:border-black outline-none transition-all placeholder-gray-200 bg-transparent"
+                placeholder="e.g. Senior Software Engineer"
+                value={formData.currentRole}
+                onChange={e => setFormData({...formData, currentRole: e.target.value})}
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-[9px] font-black uppercase tracking-widest text-gray-400">Impact Summary</label>
               <textarea 
-                className="w-full p-6 rounded-3xl border border-gray-100 bg-[#FAFAFA] text-sm font-medium outline-none h-40 resize-none focus:ring-1 focus:ring-black/5"
+                className="w-full p-6 rounded-3xl border border-gray-100 bg-[#FAFAFA] text-sm font-medium outline-none h-32 resize-none focus:ring-1 focus:ring-black/5"
                 placeholder="Key achievements and global impact..."
                 value={formData.summary}
                 onChange={e => setFormData({...formData, summary: e.target.value})}
               />
-            </div>
-            <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-2xl border border-dashed border-gray-200 opacity-60">
-                <i className="fa-solid fa-paperclip text-gray-400"></i>
-                <span className="text-[10px] font-bold text-gray-400 uppercase">Optional Evidence Attachments</span>
             </div>
           </div>
         )}
@@ -158,7 +200,7 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onComplete, onCancel })
             disabled={loading}
             className="flex-grow bg-[#111111] text-white py-4 rounded-2xl font-black italic tracking-widest uppercase shadow-lg active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-50 text-sm"
           >
-            {loading ? <i className="fa-solid fa-spinner animate-spin"></i> : 'Audit Profile'}
+            {loading ? <i className="fa-solid fa-spinner animate-spin"></i> : 'Run Global Audit'}
           </button>
         )}
       </div>

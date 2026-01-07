@@ -1,6 +1,18 @@
 {
   "name": "GTV AI Assessor",
-  "description": "AI-powered UK Global Talent Visa eligibility assessment for Fashion, Tech, and Arts professionals. Check your endorsement readiness instantly.",
+  "short_name": "GTV Assessor",
+  "description": "2026 UK Global Talent Visa AI Audit Framework.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "https://gtvassessor.com/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ],
   "requestFramePermissions": [
     "camera"
   ]
