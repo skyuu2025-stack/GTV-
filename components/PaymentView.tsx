@@ -5,9 +5,10 @@ interface PaymentViewProps {
   profile: UserProfile;
   onPaymentSuccess: () => void;
   onCancel: () => void;
+  onShowLegal: (type: 'terms' | 'privacy') => void;
 }
 
-const PaymentView: React.FC<PaymentViewProps> = ({ profile, onPaymentSuccess, onCancel }) => {
+const PaymentView: React.FC<PaymentViewProps> = ({ profile, onPaymentSuccess, onCancel, onShowLegal }) => {
   const STRIPE_URL = "https://buy.stripe.com/5kQbIT444bzybaQbTZ1Jm00";
 
   return (
@@ -29,30 +30,30 @@ const PaymentView: React.FC<PaymentViewProps> = ({ profile, onPaymentSuccess, on
         </h2>
         
         <p className="text-gray-400 text-xs font-bold italic mb-8 max-w-[280px]">
-          You have successfully completed the basic audit. Upgrade now to access the professional GTV roadmap.
+          Professional GTV roadmap grounded in 2026 Home Office criteria.
         </p>
 
         {/* Comparison List */}
         <div className="w-full bg-[#FAFAFA] rounded-[32px] p-6 border border-gray-100 mb-10 text-left space-y-4">
           <div className="flex items-start gap-3">
-             <i className="fa-solid fa-circle-check text-green-500 mt-1"></i>
+             <i className="fa-solid fa-circle-check text-green-500 mt-1 text-[10px]"></i>
              <div className="space-y-0.5">
                 <p className="text-[10px] font-black uppercase tracking-widest">Full 2026 Audit Roadmap</p>
                 <p className="text-[8px] text-gray-400 font-bold italic uppercase tracking-wider">Step-by-step endorsement actions.</p>
              </div>
           </div>
           <div className="flex items-start gap-3">
-             <i className="fa-solid fa-circle-check text-green-500 mt-1"></i>
+             <i className="fa-solid fa-circle-check text-green-500 mt-1 text-[10px]"></i>
              <div className="space-y-0.5">
                 <p className="text-[10px] font-black uppercase tracking-widest">Competency Matrix</p>
-                <p className="text-[8px] text-gray-400 font-bold italic uppercase tracking-wider">Radar analysis of your talent vs peers.</p>
+                <p className="text-[8px] text-gray-400 font-bold italic uppercase tracking-wider">Radar analysis vs. peer benchmarks.</p>
              </div>
           </div>
           <div className="flex items-start gap-3">
-             <i className="fa-solid fa-circle-check text-green-500 mt-1"></i>
+             <i className="fa-solid fa-circle-check text-green-500 mt-1 text-[10px]"></i>
              <div className="space-y-0.5">
-                <p className="text-[10px] font-black uppercase tracking-widest">PDF Export & Grounding</p>
-                <p className="text-[8px] text-gray-400 font-bold italic uppercase tracking-wider">Verified links to endorsement sources.</p>
+                <p className="text-[10px] font-black uppercase tracking-widest">PDF Export & Legal Source Links</p>
+                <p className="text-[8px] text-gray-400 font-bold italic uppercase tracking-wider">Professional documentation for legal use.</p>
              </div>
           </div>
         </div>
@@ -65,7 +66,7 @@ const PaymentView: React.FC<PaymentViewProps> = ({ profile, onPaymentSuccess, on
             rel="noopener noreferrer"
             className="block w-full bg-[#111111] text-white py-5 rounded-[28px] font-black italic text-base tracking-widest uppercase shadow-premium active:scale-95 transition-all text-center"
           >
-            Upgrade & Access Full Report
+            Upgrade & Access Report
           </a>
           
           <button 
@@ -76,12 +77,19 @@ const PaymentView: React.FC<PaymentViewProps> = ({ profile, onPaymentSuccess, on
           </button>
         </div>
 
-        <button 
-          onClick={onCancel}
-          className="mt-8 text-[8px] font-black uppercase tracking-widest text-gray-300 hover:text-black transition-colors"
-        >
-          Return to Basic Audit
-        </button>
+        <div className="mt-8 flex flex-col gap-4">
+          <button 
+            onClick={onCancel}
+            className="text-[8px] font-black uppercase tracking-widest text-gray-300 hover:text-black transition-colors"
+          >
+            Return to Basic Audit
+          </button>
+          
+          <div className="flex gap-4 text-[7px] font-black uppercase tracking-widest text-gray-300">
+            <button onClick={() => onShowLegal('terms')} className="hover:text-black">Terms</button>
+            <button onClick={() => onShowLegal('privacy')} className="hover:text-black">Privacy</button>
+          </div>
+        </div>
       </div>
     </div>
   );

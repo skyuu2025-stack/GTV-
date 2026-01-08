@@ -2,9 +2,10 @@ import React from 'react';
 
 interface HeroProps {
   onStart: () => void;
+  onShowLegal: (type: 'terms' | 'privacy') => void;
 }
 
-const Hero: React.FC<HeroProps> = ({ onStart }) => {
+const Hero: React.FC<HeroProps> = ({ onStart, onShowLegal }) => {
   return (
     <section className="w-full h-full flex flex-col items-center justify-between bg-white px-6 animate-fade-in pt-[calc(var(--sat)+1rem)] pb-[calc(var(--sab)+2rem)] overflow-hidden relative">
       {/* Top Left Logo Branding */}
@@ -14,7 +15,7 @@ const Hero: React.FC<HeroProps> = ({ onStart }) => {
         </div>
       </div>
 
-      {/* Top Zone - Added mt-16 to move down */}
+      {/* Top Zone */}
       <div className="flex flex-col items-center w-full mt-16 sm:mt-24">
         <div className="inline-flex items-center gap-2 bg-[#F0F9FF] text-[#0284C7] px-5 py-1.5 rounded-full mb-6 border border-[#E0F2FE]">
           <i className="fa-solid fa-sparkles text-[9px]"></i>
@@ -34,7 +35,7 @@ const Hero: React.FC<HeroProps> = ({ onStart }) => {
         </p>
       </div>
 
-      {/* Middle Zone - Increased top margin to move down */}
+      {/* Middle Zone */}
       <div className="flex gap-4 w-full max-w-[360px] mt-12 mb-8">
         <div className="flex-1 bg-[#F9FAFB] py-4 rounded-[28px] flex flex-col items-center justify-center gap-1.5 border border-gray-50/50">
           <div className="text-black">
@@ -59,8 +60,12 @@ const Hero: React.FC<HeroProps> = ({ onStart }) => {
           Start Free Audit
         </button>
 
-        <div className="flex flex-col items-center gap-2 pb-1">
-          <span className="text-[7px] font-black uppercase tracking-[0.3em] text-[#94A3B8] opacity-60">Verified Endorsing Criteria</span>
+        <div className="flex flex-col items-center gap-3 pb-1">
+          <div className="flex gap-3 text-[7px] font-black uppercase tracking-[0.2em] text-[#94A3B8] opacity-60">
+            <button onClick={() => onShowLegal('terms')} className="hover:text-black">Terms</button>
+            <span>•</span>
+            <button onClick={() => onShowLegal('privacy')} className="hover:text-black">Privacy</button>
+          </div>
           <div className="flex gap-3 text-[8px] font-black uppercase tracking-[0.15em] text-[#94A3B8]">
             <span>2026 HO Rules</span>
             <span className="opacity-20">/</span>

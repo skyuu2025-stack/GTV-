@@ -5,6 +5,7 @@ import AssessmentForm from './components/AssessmentForm.tsx';
 import ResultsView from './components/ResultsView.tsx';
 import PaymentView from './components/PaymentView.tsx';
 import AdminDashboard from './components/AdminDashboard.tsx';
+import LegalModals from './components/LegalModals.tsx';
 import { UserProfile, AssessmentResult } from './types.ts';
 
 const App: React.FC = () => {
@@ -12,6 +13,7 @@ const App: React.FC = () => {
   const [userTier, setUserTier] = useState<'free' | 'premium'>('free');
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [results, setResults] = useState<AssessmentResult | null>(null);
+  const [legalModal, setLegalModal] = useState<'terms' | 'privacy' | null>(null);
 
   const startAssessment = () => setView('assessment');
   
@@ -19,7 +21,7 @@ const App: React.FC = () => {
     setResults(res);
     setProfile(prof);
     setUserTier('free');
-    setView('results'); // Go directly to results (free version)
+    setView('results');
   };
 
   const handleUpgradeIntent = () => {
@@ -46,7 +48,7 @@ const App: React.FC = () => {
       
       <main className="flex-grow overflow-hidden relative w-full h-full">
         {view === 'home' && (
-          <Hero onStart={startAssessment} />
+          <Hero onStart={startAssessment} onShowLegal={setLegalModal} />
         )}
         {view === 'assessment' && (
           <AssessmentForm onComplete={handleAssessmentComplete} onCancel={() => setView('home')} />
@@ -56,6 +58,7 @@ const App: React.FC = () => {
             profile={profile} 
             onPaymentSuccess={handlePaymentSuccess} 
             onCancel={() => setView('results')} 
+            onShowLegal={setLegalModal}
           />
         )}
         {view === 'results' && results && profile && (
@@ -71,6 +74,10 @@ const App: React.FC = () => {
           <AdminDashboard onClose={() => setView('home')} />
         )}
       </main>
+
+      {legalModal && (
+        <LegalModals type={legalModal} onClose={() => setLegalModal(null)} />
+      )}
     </div>
   );
 };

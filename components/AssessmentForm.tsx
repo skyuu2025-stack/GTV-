@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { VisaRoute, UserProfile } from '../types.ts';
+import { VisaRoute, UserProfile, AssessmentRecord } from '../types.ts';
 import { analyzeEligibility } from '../services/geminiService.ts';
 
 interface AssessmentFormProps {
@@ -130,6 +130,40 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onComplete, onCancel })
     setFormData(prev => ({ ...prev, evidenceImages: prev.evidenceImages.filter((_, i) => i !== index) }));
   };
 
+  const saveToLocalStorage = (newRecord: AssessmentRecord) => {
+    const KEY = 'gtv_submissions';
+    try {
+      // Strip base64 images to save space - they are huge and exceed localStorage quota (5MB)
+      const sanitizedRecord = {
+        ...newRecord,
+        profile: {
+          ...newRecord.profile,
+          evidenceImages: [] // Don't store images in logs
+        }
+      };
+
+      const existingRaw = localStorage.getItem(KEY);
+      let existing: AssessmentRecord[] = [];
+      try {
+        existing = existingRaw ? JSON.parse(existingRaw) : [];
+      } catch (e) {
+        existing = [];
+      }
+
+      const updated = [sanitizedRecord, ...existing].slice(0, 50); // Limit to 50 records
+      
+      try {
+        localStorage.setItem(KEY, JSON.stringify(updated));
+      } catch (quotaError) {
+        // If still full, clear older entries and try again
+        console.warn('LocalStorage Quota Exceeded. Clearing old logs.');
+        localStorage.setItem(KEY, JSON.stringify([sanitizedRecord]));
+      }
+    } catch (err) {
+      console.error('Failed to save audit log:', err);
+    }
+  };
+
   const handleSubmit = async () => {
     if (!formData.fullName || !formData.email || (step === 3 && !formData.summary)) {
         alert('Complete all required fields.');
@@ -141,6 +175,17 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onComplete, onCancel })
         if (!(await window.aistudio.hasSelectedApiKey())) await window.aistudio.openSelectKey();
       }
       const result = await analyzeEligibility(formData);
+      
+      // Save locally for admin viewing
+      const record: AssessmentRecord = {
+        id: Math.random().toString(36).substring(2, 9),
+        timestamp: new Date().toISOString(),
+        profile: formData,
+        result: result
+      };
+      
+      saveToLocalStorage(record);
+
       onComplete(result, formData);
     } catch (error: any) {
       console.error(error);
@@ -193,6 +238,7 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onComplete, onCancel })
                   onChange={handleInputChange}
                   onBlur={handleBlur}
                 />
+                {touched.fullName && errors.fullName && <p className="text-[8px] font-black text-red-500 uppercase tracking-widest">{errors.fullName}</p>}
               </div>
               <div className="space-y-1">
                 <label className="text-[7px] font-black uppercase tracking-widest text-gray-400">Email Address</label>
@@ -205,6 +251,7 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onComplete, onCancel })
                   onChange={handleInputChange}
                   onBlur={handleBlur}
                 />
+                {touched.email && errors.email && <p className="text-[8px] font-black text-red-500 uppercase tracking-widest">{errors.email}</p>}
               </div>
             </div>
           )}

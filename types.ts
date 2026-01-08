@@ -44,6 +44,13 @@ export interface AssessmentResult {
   groundingSources: GroundingSource[];
 }
 
+export interface AssessmentRecord {
+  id: string;
+  timestamp: string;
+  profile: UserProfile;
+  result: AssessmentResult;
+}
+
 export interface AdminLog {
   id: string;
   timestamp: string;
