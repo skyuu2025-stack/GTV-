@@ -6,10 +6,17 @@ interface HeroProps {
 
 const Hero: React.FC<HeroProps> = ({ onStart }) => {
   return (
-    <section className="w-full h-full flex flex-col items-center justify-between bg-white px-6 animate-fade-in pt-[calc(var(--sat)+1rem)] pb-[calc(var(--sab)+2rem)] overflow-hidden">
-      {/* Top Zone */}
-      <div className="flex flex-col items-center w-full">
-        <div className="inline-flex items-center gap-2 bg-[#F0F9FF] text-[#0284C7] px-5 py-1.5 rounded-full mb-6 border border-[#E0F2FE] mt-2">
+    <section className="w-full h-full flex flex-col items-center justify-between bg-white px-6 animate-fade-in pt-[calc(var(--sat)+1rem)] pb-[calc(var(--sab)+2rem)] overflow-hidden relative">
+      {/* Top Left Logo Branding */}
+      <div className="absolute top-6 left-6 sm:top-8 sm:left-8">
+        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-black text-white rounded-xl sm:rounded-2xl flex items-center justify-center font-black text-lg sm:text-xl italic shadow-2xl transition-transform hover:scale-110 cursor-default">
+          G
+        </div>
+      </div>
+
+      {/* Top Zone - Added mt-16 to move down */}
+      <div className="flex flex-col items-center w-full mt-16 sm:mt-24">
+        <div className="inline-flex items-center gap-2 bg-[#F0F9FF] text-[#0284C7] px-5 py-1.5 rounded-full mb-6 border border-[#E0F2FE]">
           <i className="fa-solid fa-sparkles text-[9px]"></i>
           <span className="text-[10px] font-black uppercase tracking-[0.2em]">Free Basic Audit Included</span>
         </div>
@@ -27,8 +34,8 @@ const Hero: React.FC<HeroProps> = ({ onStart }) => {
         </p>
       </div>
 
-      {/* Middle Zone */}
-      <div className="flex gap-4 w-full max-w-[360px] my-4">
+      {/* Middle Zone - Increased top margin to move down */}
+      <div className="flex gap-4 w-full max-w-[360px] mt-12 mb-8">
         <div className="flex-1 bg-[#F9FAFB] py-4 rounded-[28px] flex flex-col items-center justify-center gap-1.5 border border-gray-50/50">
           <div className="text-black">
              <span className="text-[10px] font-black">FREE</span>
