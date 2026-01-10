@@ -1,4 +1,3 @@
-
 export enum VisaRoute {
   TECH = 'Digital Technology (Tech Nation)',
   ARTS = 'Arts and Culture (Arts Council)',
@@ -23,6 +22,12 @@ export interface InsightPoint {
   description: string;
 }
 
+export interface GeoInsight {
+  visibilityScore: number;
+  aiPersona: string;
+  discoveryTips: string[];
+}
+
 export interface UserProfile {
   fullName: string;
   email: string;
@@ -32,6 +37,7 @@ export interface UserProfile {
   summary: string;
   evidenceItems: string[];
   evidenceImages: string[];
+  publicUrl?: string; // New field for GEO analysis
 }
 
 export interface AssessmentResult {
@@ -42,6 +48,7 @@ export interface AssessmentResult {
   recommendations: Recommendation[];
   suggestedEvidence: string[];
   groundingSources: GroundingSource[];
+  geoAudit?: GeoInsight; // New optional GEO data
 }
 
 export interface AssessmentRecord {

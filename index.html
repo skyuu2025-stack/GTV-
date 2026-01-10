@@ -4,13 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#ffffff">
+    <link rel="manifest" href="metadata.json">
+    <link rel="apple-touch-icon" href="https://gtvassessor.com/icon-192.png">
     
-    <title>GTV AI Assessor – UK Global Talent Visa 2026 Audit</title>
-    <meta name="description" content="AI-powered UK Global Talent Visa eligibility assessment for 2026. Professional audit tool for tech and creative endorsement routes." />
+    <title>GTV AI Assessor – Official UK Global Talent Visa 2026 Audit</title>
+    <meta name="description" content="AI-powered assessment for the UK Global Talent Visa (GTV). Check your endorsement probability for Tech Nation, Arts Council, and more." />
+    <meta name="robots" content="index, follow">
     
     <link rel="canonical" href="https://gtvassessor.com" />
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "GTV AI Assessor",
+      "operatingSystem": "iOS, Android, Web",
+      "applicationCategory": "BusinessApplication",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "GBP"
+      }
+    }
+    </script>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -20,6 +39,8 @@
         :root { 
             --sat: env(safe-area-inset-top, 0px); 
             --sab: env(safe-area-inset-bottom, 0px); 
+            --sar: env(safe-area-inset-right, 0px);
+            --sal: env(safe-area-inset-left, 0px);
         }
         
         html, body, #root { 
@@ -31,6 +52,7 @@
             background-color: #ffffff;
             position: fixed;
             overscroll-behavior: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body { 
@@ -45,15 +67,29 @@
             from { opacity: 0; transform: translateY(10px); } 
             to { opacity: 1; transform: translateY(0); } 
         }
-        .animate-fade-in { animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .animate-fade-in { animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-        input, select, textarea { font-size: 16px !important; }
+        input, select, textarea { 
+            font-size: 16px !important; /* Prevents auto-zoom on iOS */
+            appearance: none;
+        }
 
         .shadow-premium {
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+        }
+
+        .scroll-container {
+            overflow-y: auto;
+            scroll-behavior: smooth;
+            padding-bottom: var(--sab);
+        }
+
+        /* Fix for iOS bottom bar on forms */
+        .form-container {
+            padding-bottom: calc(var(--sab) + 20px);
         }
     </style>
 

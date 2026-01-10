@@ -2,7 +2,6 @@ import { GoogleGenAI, Type } from "@google/genai";
 import { UserProfile, AssessmentResult, GroundingSource } from "../types.ts";
 
 export const analyzeEligibility = async (profile: UserProfile): Promise<AssessmentResult> => {
-  // Always create a fresh instance to ensure correct API key usage
   const apiKey = process.env.API_KEY;
   if (!apiKey) {
     throw new Error("API Key is missing from the environment.");
@@ -11,10 +10,11 @@ export const analyzeEligibility = async (profile: UserProfile): Promise<Assessme
   const ai = new GoogleGenAI({ apiKey });
   
   const textPrompt = `
-    Perform a live audit for a UK Global Talent Visa (${profile.route} route) as an ${profile.careerStage}.
+    Perform a professional audit for a UK Global Talent Visa (${profile.route} route) as an ${profile.careerStage}.
     
     Candidate Identity: ${profile.fullName}
     Current Role: ${profile.currentRole}
+    Public Profile: ${profile.publicUrl || 'Not provided'}
     
     Career Summary: 
     ${profile.summary}
@@ -24,11 +24,13 @@ export const analyzeEligibility = async (profile: UserProfile): Promise<Assessme
 
     Visual Evidence Attached: ${profile.evidenceImages.length} items.
 
-    MANDATORY: Use Google Search to verify the LATEST 2026 endorsement criteria for ${profile.route}. 
-    Cross-reference the candidate's profile against current Home Office requirements and specific endorsing body guidance.
+    TASKS:
+    1. VISA AUDIT: Verify against LATEST 2026 endorsement criteria. Use Google Search.
+    2. GEO AUDIT (Generative Engine Optimization): Analyze how "discoverable" this candidate's profile is for AI agents (LLMs). 
+       Evaluate if an AI search (Perplexity/Gemini/GPT-4o) could easily verify their claims. 
+       Provide a 'visibilityScore' (0-100), an 'aiPersona' (how an AI sees them), and 'discoveryTips' (SEO/GEO steps to improve AI-readiness).
     
-    For strengths and weaknesses, provide a 'title' (short name) and a 'description' (detailed context on why this matters for the visa).
-    Provide high-precision recommendations in JSON format.
+    Return a strict JSON response.
   `;
 
   const parts: any[] = [{ text: textPrompt }];
@@ -53,7 +55,9 @@ export const analyzeEligibility = async (profile: UserProfile): Promise<Assessme
       model: "gemini-3-pro-preview", 
       contents: { parts },
       config: {
-        systemInstruction: "You are a lead UK Global Talent Visa legal auditor. You MUST use Google Search to grounding your advice in current 2025/2026 rules. Return a strict JSON response. Do not use Markdown backticks in the response. Ensure strengths and weaknesses are detailed objects with title and description fields.",
+        systemInstruction: `You are a lead UK Global Talent Visa auditor and GEO (Generative Engine Optimization) expert. 
+        You MUST use Google Search for grounding. Return JSON only.
+        The 'geoAudit' object should contain visibilityScore (integer), aiPersona (string), and discoveryTips (array of strings).`,
         responseMimeType: "application/json",
         tools: [{ googleSearch: {} }],
         responseSchema: {
@@ -95,17 +99,24 @@ export const analyzeEligibility = async (profile: UserProfile): Promise<Assessme
                 required: ["title", "description", "action"]
               } 
             },
-            suggestedEvidence: { type: Type.ARRAY, items: { type: Type.STRING } }
+            suggestedEvidence: { type: Type.ARRAY, items: { type: Type.STRING } },
+            geoAudit: {
+              type: Type.OBJECT,
+              properties: {
+                visibilityScore: { type: Type.INTEGER },
+                aiPersona: { type: Type.STRING },
+                discoveryTips: { type: Type.ARRAY, items: { type: Type.STRING } }
+              },
+              required: ["visibilityScore", "aiPersona", "discoveryTips"]
+            }
           },
-          required: ["score", "probability", "strengths", "weaknesses", "recommendations", "suggestedEvidence"]
+          required: ["score", "probability", "strengths", "weaknesses", "recommendations", "suggestedEvidence", "geoAudit"]
         }
       }
     });
 
     const jsonStr = response.text;
-    if (!jsonStr) {
-      throw new Error("Empty response from AI engine.");
-    }
+    if (!jsonStr) throw new Error("Empty response from AI engine.");
     
     const parsedData = JSON.parse(jsonStr.trim());
 
